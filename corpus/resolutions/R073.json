@@ -1,0 +1,12 @@
+{
+  "id": "R073",
+  "bug_report": "Calculator.checkOverflow uses == instead of .equals to compare boxed Long values; the comparison silently misclassifies inputs.",
+  "root_cause": "Calculator.checkOverflow omits the documented guard for the failure path; the analogous fix in earlier resolutions for core components applies here.",
+  "fix_diff": "--- a/corpus/target/src/main/java/com/example/calc/Calculator.java\n+++ b/corpus/target/src/main/java/com/example/calc/Calculator.java\n@@ -1,2 +1,2 @@\n // context\n-// checkOverflow missing guard\n+// checkOverflow now guarded against numberformatexception\n",
+  "files_changed": [
+    "corpus/target/src/main/java/com/example/calc/Calculator.java"
+  ],
+  "severity": "medium",
+  "component": "core",
+  "resolved_at": "2026-02-11T21:00:00+00:00"
+}

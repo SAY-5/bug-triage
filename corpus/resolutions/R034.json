@@ -1,0 +1,12 @@
+{
+  "id": "R034",
+  "bug_report": "CalcServer.handleHealthz leaks a stack trace into the HTTP response body when the request is malformed; should map to a structured 400 instead.",
+  "root_cause": "CalcServer.handleHealthz omits the documented guard for the failure path; the analogous fix in earlier resolutions for api components applies here.",
+  "fix_diff": "--- a/corpus/target/src/main/java/com/example/calc/CalcServer.java\n+++ b/corpus/target/src/main/java/com/example/calc/CalcServer.java\n@@ -1,2 +1,2 @@\n // context\n-// handleHealthz missing guard\n+// handleHealthz now guarded against illegalstateexception\n",
+  "files_changed": [
+    "corpus/target/src/main/java/com/example/calc/CalcServer.java"
+  ],
+  "severity": "medium",
+  "component": "api",
+  "resolved_at": "2026-02-02T03:00:00+00:00"
+}

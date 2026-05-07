@@ -1,0 +1,12 @@
+{
+  "id": "R181",
+  "bug_report": "Calculator.resetCounter silently swallows IllegalArgumentException and returns a default value, masking real failures from clients hitting /sub.",
+  "root_cause": "Calculator.resetCounter omits the documented guard for the failure path; the analogous fix in earlier resolutions for core components applies here.",
+  "fix_diff": "--- a/corpus/target/src/main/java/com/example/calc/Calculator.java\n+++ b/corpus/target/src/main/java/com/example/calc/Calculator.java\n@@ -1,2 +1,2 @@\n // context\n-// resetCounter missing guard\n+// resetCounter now guarded against illegalargumentexception\n",
+  "files_changed": [
+    "corpus/target/src/main/java/com/example/calc/Calculator.java"
+  ],
+  "severity": "high",
+  "component": "core",
+  "resolved_at": "2026-03-10T21:00:00+00:00"
+}

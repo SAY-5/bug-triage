@@ -1,0 +1,9 @@
+{
+  "timestamp": "20260507T215849Z",
+  "corpus_size": 200,
+  "num_inputs": 50,
+  "top_1_rate": 0.7,
+  "top_3_rate": 0.94,
+  "latency_p50_ms": 9.859,
+  "latency_p95_ms": 12.199
+}

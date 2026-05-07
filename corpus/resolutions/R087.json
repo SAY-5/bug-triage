@@ -1,0 +1,12 @@
+{
+  "id": "R087",
+  "bug_report": "CalcServer.handleAdd returns the wrong HTTP status (200) on partial failure instead of 207 or 500; clients can't distinguish success from degraded.",
+  "root_cause": "CalcServer.handleAdd omits the documented guard for the failure path; the analogous fix in earlier resolutions for api components applies here.",
+  "fix_diff": "--- a/corpus/target/src/main/java/com/example/calc/CalcServer.java\n+++ b/corpus/target/src/main/java/com/example/calc/CalcServer.java\n@@ -1,2 +1,2 @@\n // context\n-// handleAdd missing guard\n+// handleAdd now guarded against numberformatexception\n",
+  "files_changed": [
+    "corpus/target/src/main/java/com/example/calc/CalcServer.java"
+  ],
+  "severity": "critical",
+  "component": "api",
+  "resolved_at": "2026-02-15T09:00:00+00:00"
+}

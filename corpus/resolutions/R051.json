@@ -1,0 +1,12 @@
+{
+  "id": "R051",
+  "bug_report": "Calculator.incrementCounter does not propagate the trace id from the inbound request headers; logs from /eval can't be correlated with upstream calls.",
+  "root_cause": "Calculator.incrementCounter omits the documented guard for the failure path; the analogous fix in earlier resolutions for core components applies here.",
+  "fix_diff": "--- a/corpus/target/src/main/java/com/example/calc/Calculator.java\n+++ b/corpus/target/src/main/java/com/example/calc/Calculator.java\n@@ -1,2 +1,2 @@\n // context\n-// incrementCounter missing guard\n+// incrementCounter now guarded against nullpointerexception\n",
+  "files_changed": [
+    "corpus/target/src/main/java/com/example/calc/Calculator.java"
+  ],
+  "severity": "critical",
+  "component": "core",
+  "resolved_at": "2026-02-06T09:00:00+00:00"
+}

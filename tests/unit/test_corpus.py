@@ -16,9 +16,10 @@ SEVERITIES = {"critical", "high", "medium", "low"}
 COMPONENTS = {"api", "core", "util", "tests", "build"}
 
 
-def test_thirty_resolutions_present() -> None:
+def test_corpus_size() -> None:
+    """30 hand-written + 170 deterministic synthetic exemplars = 200."""
     files = iter_resolution_files(RESOLUTIONS_DIR)
-    assert len(files) == 30
+    assert len(files) == 200
 
 
 def test_each_resolution_has_required_keys() -> None:
@@ -60,9 +61,9 @@ def test_files_changed_match_diff_paths() -> None:
 
 def test_load_resolutions_builds_orm_rows() -> None:
     rows = load_resolutions(RESOLUTIONS_DIR)
-    assert len(rows) == 30
+    assert len(rows) == 200
     ids = {r.id for r in rows}
-    assert "R001" in ids and "R030" in ids
+    assert "R001" in ids and "R030" in ids and "R200" in ids
 
 
 def test_referenced_paths_exist_on_disk() -> None:

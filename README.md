@@ -20,6 +20,43 @@ FakeProvider hermetic baseline against the 20-case `triage_v1` suite (n=20,
 HashEmbedder, scripted FakeProvider). Reproduce with `make eval`. The full
 per-case breakdown is committed at `eval/baselines/triage_fake.json`.
 
+## 200-resolution bench (HashEmbedder + FakeProvider, 50 inputs)
+
+| metric | value |
+| --- | --- |
+| corpus_size | 200 |
+| num_inputs | 50 |
+| top_1_rate | 0.70 |
+| top_3_rate | 0.94 |
+| latency_p50_ms | ~10 |
+| latency_p95_ms | ~12 |
+
+These numbers come from `make bench` against the merged 30+170 corpus (the
+30 hand-written exemplars cover real Calculator/ExpressionParser/Validation
+faults; the 170 synthetic exemplars are emitted by
+`scripts/generate_synthetic_corpus.py` as bug-template x Java-method-template
+combinations under a fixed seed). Half the bench inputs reuse a corpus
+report verbatim; the other half perturb it with a leading prefix and a
+trimmed first word, so the top-1/top-3 rates measure paraphrase resilience
+of the hash embedder rather than identity lookups. Re-run with
+`make bench-regress`; CI fails if top_1 or top_3 drop by >0.05 absolute or
+P95 latency more than doubles.
+
+### Synthetic-corpus generator process
+
+`scripts/generate_synthetic_corpus.py` generates R031..R200 by combining:
+
+1. 30 bug-report templates that name a fault mode (silently-swallowed
+   exception, NPE, precision loss, leaked stack trace, etc.).
+2. A pool of fictional method names per file in `corpus/target/` so each
+   bug refers to a real class with a plausible (fictional) method.
+3. Severity and component picks that rotate through the closed enums but
+   bias toward each template's natural affinity 1/3 of the time.
+
+The script is deterministic (fixed seed 0xBEEF, stable iteration order),
+hermetic (no network, no Faker dependency -- vocabulary is in-script), and
+idempotent (rerunning produces byte-identical files).
+
 Reading the table:
 - The 1.00 retrieval scores reflect the deterministic hash embedder against
   hand-written exemplars whose vocabulary intentionally overlaps the eval
@@ -65,7 +102,8 @@ Reading the table:
 | `bug_triage.cli` | Click CLI: `bug-triage index`, `triage --file`, `eval run` |
 | `bug_triage.eval_harness` | per-case scoring + JSON/Markdown report |
 | `corpus/target/` | Maven `calc-server` toy project; the retrieval ground |
-| `corpus/resolutions/` | 30 hand-written `(bug, fix)` JSON exemplars |
+| `corpus/resolutions/` | 30 hand-written + 170 synthetic `(bug, fix)` JSON exemplars (200 total) |
+| `bench/` | bench harness + bench-regress gate over the 200-resolution corpus |
 | `eval/suites/triage_v1.yaml` | 20 paraphrased incoming bug reports with ground truth |
 
 ## Quickstart

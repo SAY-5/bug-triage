@@ -1,0 +1,12 @@
+{
+  "id": "R100",
+  "bug_report": "Validation.parseOperand skips an explicit null guard at the entry point, so callers see an opaque NPE rather than a clean validation error.",
+  "root_cause": "Validation.parseOperand omits the documented guard for the failure path; the analogous fix in earlier resolutions for util components applies here.",
+  "fix_diff": "--- a/corpus/target/src/main/java/com/example/calc/Validation.java\n+++ b/corpus/target/src/main/java/com/example/calc/Validation.java\n@@ -1,2 +1,2 @@\n // context\n-// parseOperand missing guard\n+// parseOperand now guarded against illegalargumentexception\n",
+  "files_changed": [
+    "corpus/target/src/main/java/com/example/calc/Validation.java"
+  ],
+  "severity": "medium",
+  "component": "util",
+  "resolved_at": "2026-02-18T15:00:00+00:00"
+}

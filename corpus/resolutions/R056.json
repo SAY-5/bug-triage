@@ -1,0 +1,12 @@
+{
+  "id": "R056",
+  "bug_report": "Calculator.addExact parses operands using Long.parseLong without a radix, so leading zeros are interpreted as decimal and the doc claims octal.",
+  "root_cause": "Calculator.addExact omits the documented guard for the failure path; the analogous fix in earlier resolutions for core components applies here.",
+  "fix_diff": "--- a/corpus/target/src/main/java/com/example/calc/Calculator.java\n+++ b/corpus/target/src/main/java/com/example/calc/Calculator.java\n@@ -1,2 +1,2 @@\n // context\n-// addExact missing guard\n+// addExact now guarded against illegalstateexception\n",
+  "files_changed": [
+    "corpus/target/src/main/java/com/example/calc/Calculator.java"
+  ],
+  "severity": "high",
+  "component": "core",
+  "resolved_at": "2026-02-07T15:00:00+00:00"
+}

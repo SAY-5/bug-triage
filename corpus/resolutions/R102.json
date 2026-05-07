@@ -1,0 +1,12 @@
+{
+  "id": "R102",
+  "bug_report": "CalcServer.readBody closes the response writer before flushing, so the client sees a truncated JSON body from /eval.",
+  "root_cause": "CalcServer.readBody omits the documented guard for the failure path; the analogous fix in earlier resolutions for api components applies here.",
+  "fix_diff": "--- a/corpus/target/src/main/java/com/example/calc/CalcServer.java\n+++ b/corpus/target/src/main/java/com/example/calc/CalcServer.java\n@@ -1,2 +1,2 @@\n // context\n-// readBody missing guard\n+// readBody now guarded against nullpointerexception\n",
+  "files_changed": [
+    "corpus/target/src/main/java/com/example/calc/CalcServer.java"
+  ],
+  "severity": "low",
+  "component": "api",
+  "resolved_at": "2026-02-19T03:00:00+00:00"
+}

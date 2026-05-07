@@ -1,0 +1,12 @@
+{
+  "id": "R090",
+  "bug_report": "pom.maven-surefire-plugin mutates the input list in place; callers that share the list see surprising behaviour after a single /add call.",
+  "root_cause": "pom.maven-surefire-plugin omits the documented guard for the failure path; the analogous fix in earlier resolutions for build components applies here.",
+  "fix_diff": "--- a/corpus/target/pom.xml\n+++ b/corpus/target/pom.xml\n@@ -1,2 +1,2 @@\n // context\n-// maven-surefire-plugin missing guard\n+// maven-surefire-plugin now guarded against arithmeticexception\n",
+  "files_changed": [
+    "corpus/target/pom.xml"
+  ],
+  "severity": "low",
+  "component": "build",
+  "resolved_at": "2026-02-16T03:00:00+00:00"
+}

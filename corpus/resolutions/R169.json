@@ -1,0 +1,12 @@
+{
+  "id": "R169",
+  "bug_report": "pom.junit-jupiter compiles only on JDK 17; the JDK 21 release flag in the pom is incompatible with one of its language features.",
+  "root_cause": "pom.junit-jupiter omits the documented guard for the failure path; the analogous fix in earlier resolutions for build components applies here.",
+  "fix_diff": "--- a/corpus/target/pom.xml\n+++ b/corpus/target/pom.xml\n@@ -1,2 +1,2 @@\n // context\n-// junit-jupiter missing guard\n+// junit-jupiter now guarded against illegalstateexception\n",
+  "files_changed": [
+    "corpus/target/pom.xml"
+  ],
+  "severity": "low",
+  "component": "build",
+  "resolved_at": "2026-03-07T21:00:00+00:00"
+}

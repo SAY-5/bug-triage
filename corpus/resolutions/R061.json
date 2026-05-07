@@ -1,0 +1,12 @@
+{
+  "id": "R061",
+  "bug_report": "Calculator.mulExact silently swallows NumberFormatException and returns a default value, masking real failures from clients hitting /add.",
+  "root_cause": "Calculator.mulExact omits the documented guard for the failure path; the analogous fix in earlier resolutions for core components applies here.",
+  "fix_diff": "--- a/corpus/target/src/main/java/com/example/calc/Calculator.java\n+++ b/corpus/target/src/main/java/com/example/calc/Calculator.java\n@@ -1,2 +1,2 @@\n // context\n-// mulExact missing guard\n+// mulExact now guarded against numberformatexception\n",
+  "files_changed": [
+    "corpus/target/src/main/java/com/example/calc/Calculator.java"
+  ],
+  "severity": "high",
+  "component": "core",
+  "resolved_at": "2026-02-08T21:00:00+00:00"
+}
