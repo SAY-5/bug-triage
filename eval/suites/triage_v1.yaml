@@ -1,0 +1,224 @@
+version: "1.0"
+suite: triage_v1
+description: |
+  20 incoming bug reports paraphrased from the 30-exemplar corpus. Each case
+  has a ground-truth top-1 resolution_id, expected severity/component, and
+  the files the maintainer's actual fix would touch. The expected_top1
+  references are stable and intentionally distinguishable so the deterministic
+  hash embedder can resolve them.
+
+cases:
+  - id: C01
+    bug_report: |
+      The /div endpoint in CalcServer returns Infinity instead of throwing
+      ArithmeticException when the denominator is zero. Calculator.div needs
+      a division by zero guard.
+    severity: high
+    component: core
+    expected_top1_resolution_id: R001
+    expected_files_changed:
+      - corpus/target/src/main/java/com/example/calc/Calculator.java
+
+  - id: C02
+    bug_report: |
+      Calculator.add silently overflows on Long.MAX_VALUE inputs. The /add
+      endpoint should reject overflow rather than wrap. Math.addExact would
+      raise ArithmeticException correctly.
+    severity: high
+    component: core
+    expected_top1_resolution_id: R002
+    expected_files_changed:
+      - corpus/target/src/main/java/com/example/calc/Calculator.java
+
+  - id: C03
+    bug_report: |
+      Calculator.mul wraps silently for large operand pairs at the /mul
+      endpoint. Use Math.multiplyExact to detect overflow.
+    severity: high
+    component: core
+    expected_top1_resolution_id: R003
+    expected_files_changed:
+      - corpus/target/src/main/java/com/example/calc/Calculator.java
+
+  - id: C04
+    bug_report: |
+      Calculator.sub overflows silently when subtracting Long.MIN_VALUE from
+      a positive operand at /sub. Replace with Math.subtractExact.
+    severity: high
+    component: core
+    expected_top1_resolution_id: R004
+    expected_files_changed:
+      - corpus/target/src/main/java/com/example/calc/Calculator.java
+
+  - id: C05
+    bug_report: |
+      ExpressionParser.evaluate throws NullPointerException on a null
+      expression argument. It should validate non-null at the entry point and
+      raise IllegalArgumentException instead.
+    severity: medium
+    component: core
+    expected_top1_resolution_id: R006
+    expected_files_changed:
+      - corpus/target/src/main/java/com/example/calc/ExpressionParser.java
+
+  - id: C06
+    bug_report: |
+      ExpressionParser silently accepts unbalanced parentheses like
+      '2 * (3 + 4'. RPN conversion should reject a trailing '(' on the
+      operator stack.
+    severity: high
+    component: core
+    expected_top1_resolution_id: R007
+    expected_files_changed:
+      - corpus/target/src/main/java/com/example/calc/ExpressionParser.java
+
+  - id: C07
+    bug_report: |
+      ExpressionParser tokenizer rejects negative-number literals like
+      '-3 + 4' with 'unexpected character'. A leading minus must be allowed
+      to start a number when the previous token is an operator.
+    severity: medium
+    component: core
+    expected_top1_resolution_id: R008
+    expected_files_changed:
+      - corpus/target/src/main/java/com/example/calc/ExpressionParser.java
+
+  - id: C08
+    bug_report: |
+      Validation.parseOperand accepts blank or whitespace-only strings.
+      /add?a= reaches Calculator and crashes with NumberFormatException.
+      isBlank check should reject early.
+    severity: medium
+    component: util
+    expected_top1_resolution_id: R011
+    expected_files_changed:
+      - corpus/target/src/main/java/com/example/calc/Validation.java
+
+  - id: C09
+    bug_report: |
+      Validation.requireNonEmpty allows whitespace-only strings to reach
+      /eval, producing a confusing 'empty expression' message far from the
+      origin of the failure.
+    severity: medium
+    component: util
+    expected_top1_resolution_id: R013
+    expected_files_changed:
+      - corpus/target/src/main/java/com/example/calc/Validation.java
+
+  - id: C10
+    bug_report: |
+      Validation.parseOperand passes the original NumberFormatException
+      message through unchanged, leaking 'For input string: ...' to clients.
+      Wrap with a domain-specific IllegalArgumentException.
+    severity: low
+    component: util
+    expected_top1_resolution_id: R014
+    expected_files_changed:
+      - corpus/target/src/main/java/com/example/calc/Validation.java
+
+  - id: C11
+    bug_report: |
+      CalcServer /add endpoint returns 500 with a stack trace when query
+      parameters are missing. Should map IllegalArgumentException from
+      Validation to a 400 response with a clean message.
+    severity: high
+    component: api
+    expected_top1_resolution_id: R015
+    expected_files_changed:
+      - corpus/target/src/main/java/com/example/calc/CalcServer.java
+
+  - id: C12
+    bug_report: |
+      CalcServer /div endpoint returns 500 on division by zero instead of
+      a 422 Unprocessable Entity carrying the arithmetic error message.
+    severity: high
+    component: api
+    expected_top1_resolution_id: R016
+    expected_files_changed:
+      - corpus/target/src/main/java/com/example/calc/CalcServer.java
+
+  - id: C13
+    bug_report: |
+      CalcServer /eval endpoint truncates UTF-8 multi-byte responses because
+      Content-Length was set to body.length() (chars) instead of bytes.length.
+    severity: medium
+    component: api
+    expected_top1_resolution_id: R017
+    expected_files_changed:
+      - corpus/target/src/main/java/com/example/calc/CalcServer.java
+
+  - id: C14
+    bug_report: |
+      CalcServer.parseQuery throws StringIndexOutOfBoundsException when a
+      query parameter has no '=' sign, instead of treating it as a flag.
+    severity: medium
+    component: api
+    expected_top1_resolution_id: R018
+    expected_files_changed:
+      - corpus/target/src/main/java/com/example/calc/CalcServer.java
+
+  - id: C15
+    bug_report: |
+      CalcServer /healthz endpoint is missing. The load balancer reports the
+      calc-server as unhealthy after deployment because no handler is
+      registered for that path.
+    severity: high
+    component: api
+    expected_top1_resolution_id: R019
+    expected_files_changed:
+      - corpus/target/src/main/java/com/example/calc/CalcServer.java
+
+  - id: C16
+    bug_report: |
+      Maven build fails with 'invalid target release: 21' on CI runners that
+      only have JDK 17. pom.xml maven.compiler.release must be 21 and the
+      runner toolchain must be pinned.
+    severity: medium
+    component: build
+    expected_top1_resolution_id: R021
+    expected_files_changed:
+      - corpus/target/pom.xml
+
+  - id: C17
+    bug_report: |
+      Manifest in calc-server.jar is missing Main-Class, so 'java -jar'
+      fails with 'no main manifest attribute'. Configure maven-jar-plugin
+      with a manifest mainClass entry.
+    severity: high
+    component: build
+    expected_top1_resolution_id: R023
+    expected_files_changed:
+      - corpus/target/pom.xml
+
+  - id: C18
+    bug_report: |
+      Maven Surefire runs zero tests in CI. The test compile reports 'no
+      tests in this project' for CalculatorTest because Surefire 2.x cannot
+      discover JUnit 5 platform tests; 3.x is required.
+    severity: medium
+    component: build
+    expected_top1_resolution_id: R024
+    expected_files_changed:
+      - corpus/target/pom.xml
+
+  - id: C19
+    bug_report: |
+      CalculatorTest is flaky on parallel runs because Calculator.invocations
+      leaks state across tests; assertEquals on the counter fails
+      intermittently. Need a @BeforeEach reset.
+    severity: medium
+    component: tests
+    expected_top1_resolution_id: R025
+    expected_files_changed:
+      - corpus/target/src/test/java/com/example/calc/CalculatorTest.java
+
+  - id: C20
+    bug_report: |
+      CalculatorTest does not assertThrows ArithmeticException on
+      Calculator.div with zero divisor. The test silently passes even when
+      the guard is missing.
+    severity: low
+    component: tests
+    expected_top1_resolution_id: R026
+    expected_files_changed:
+      - corpus/target/src/test/java/com/example/calc/CalculatorTest.java

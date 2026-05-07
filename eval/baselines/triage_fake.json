@@ -1,0 +1,417 @@
+{
+  "suite": "triage_v1",
+  "provider": "fake",
+  "embedder": "HashEmbedder",
+  "n": 20,
+  "metrics": {
+    "severity_match": 0.6,
+    "component_match": 0.7,
+    "top1_retrieval_match": 1.0,
+    "top3_retrieval_match": 1.0,
+    "suggested_diff_parses": 1.0,
+    "mean_files_overlap": 0.625
+  },
+  "generated_at": "2026-05-07T08:24:57+00:00",
+  "cases": [
+    {
+      "case_id": "C01",
+      "severity_match": true,
+      "component_match": false,
+      "top1_retrieval_match": true,
+      "top3_retrieval_match": true,
+      "suggested_diff_parses": true,
+      "suggested_files_overlap": 0.5,
+      "retrieved_ids": [
+        "R001",
+        "R016",
+        "R026"
+      ],
+      "classification": {
+        "severity": "high",
+        "component": "api",
+        "confidence": 0.8,
+        "reasoning": "Heuristic classifier matched keywords for severity=high and component=api."
+      }
+    },
+    {
+      "case_id": "C02",
+      "severity_match": true,
+      "component_match": false,
+      "top1_retrieval_match": true,
+      "top3_retrieval_match": true,
+      "suggested_diff_parses": true,
+      "suggested_files_overlap": 1.0,
+      "retrieved_ids": [
+        "R002",
+        "R001",
+        "R004"
+      ],
+      "classification": {
+        "severity": "high",
+        "component": "api",
+        "confidence": 0.75,
+        "reasoning": "Heuristic classifier matched keywords for severity=high and component=api."
+      }
+    },
+    {
+      "case_id": "C03",
+      "severity_match": true,
+      "component_match": false,
+      "top1_retrieval_match": true,
+      "top3_retrieval_match": true,
+      "suggested_diff_parses": true,
+      "suggested_files_overlap": 1.0,
+      "retrieved_ids": [
+        "R003",
+        "R004",
+        "R002"
+      ],
+      "classification": {
+        "severity": "high",
+        "component": "api",
+        "confidence": 0.7,
+        "reasoning": "Heuristic classifier matched keywords for severity=high and component=api."
+      }
+    },
+    {
+      "case_id": "C04",
+      "severity_match": true,
+      "component_match": false,
+      "top1_retrieval_match": true,
+      "top3_retrieval_match": true,
+      "suggested_diff_parses": true,
+      "suggested_files_overlap": 0.5,
+      "retrieved_ids": [
+        "R004",
+        "R015",
+        "R003"
+      ],
+      "classification": {
+        "severity": "high",
+        "component": "api",
+        "confidence": 0.65,
+        "reasoning": "Heuristic classifier matched keywords for severity=high and component=api."
+      }
+    },
+    {
+      "case_id": "C05",
+      "severity_match": false,
+      "component_match": true,
+      "top1_retrieval_match": true,
+      "top3_retrieval_match": true,
+      "suggested_diff_parses": true,
+      "suggested_files_overlap": 1.0,
+      "retrieved_ids": [
+        "R006",
+        "R007",
+        "R010"
+      ],
+      "classification": {
+        "severity": "high",
+        "component": "core",
+        "confidence": 0.8,
+        "reasoning": "Heuristic classifier matched keywords for severity=high and component=core."
+      }
+    },
+    {
+      "case_id": "C06",
+      "severity_match": false,
+      "component_match": true,
+      "top1_retrieval_match": true,
+      "top3_retrieval_match": true,
+      "suggested_diff_parses": true,
+      "suggested_files_overlap": 1.0,
+      "retrieved_ids": [
+        "R007",
+        "R010",
+        "R009"
+      ],
+      "classification": {
+        "severity": "medium",
+        "component": "core",
+        "confidence": 0.7,
+        "reasoning": "Heuristic classifier matched keywords for severity=medium and component=core."
+      }
+    },
+    {
+      "case_id": "C07",
+      "severity_match": true,
+      "component_match": true,
+      "top1_retrieval_match": true,
+      "top3_retrieval_match": true,
+      "suggested_diff_parses": true,
+      "suggested_files_overlap": 1.0,
+      "retrieved_ids": [
+        "R008",
+        "R007",
+        "R006"
+      ],
+      "classification": {
+        "severity": "medium",
+        "component": "core",
+        "confidence": 0.7,
+        "reasoning": "Heuristic classifier matched keywords for severity=medium and component=core."
+      }
+    },
+    {
+      "case_id": "C08",
+      "severity_match": false,
+      "component_match": true,
+      "top1_retrieval_match": true,
+      "top3_retrieval_match": true,
+      "suggested_diff_parses": true,
+      "suggested_files_overlap": 0.5,
+      "retrieved_ids": [
+        "R011",
+        "R028",
+        "R015"
+      ],
+      "classification": {
+        "severity": "critical",
+        "component": "util",
+        "confidence": 0.75,
+        "reasoning": "Heuristic classifier matched keywords for severity=critical and component=util."
+      }
+    },
+    {
+      "case_id": "C09",
+      "severity_match": true,
+      "component_match": true,
+      "top1_retrieval_match": true,
+      "top3_retrieval_match": true,
+      "suggested_diff_parses": true,
+      "suggested_files_overlap": 0.5,
+      "retrieved_ids": [
+        "R013",
+        "R011",
+        "R007"
+      ],
+      "classification": {
+        "severity": "medium",
+        "component": "util",
+        "confidence": 0.7,
+        "reasoning": "Heuristic classifier matched keywords for severity=medium and component=util."
+      }
+    },
+    {
+      "case_id": "C10",
+      "severity_match": false,
+      "component_match": true,
+      "top1_retrieval_match": true,
+      "top3_retrieval_match": true,
+      "suggested_diff_parses": true,
+      "suggested_files_overlap": 0.5,
+      "retrieved_ids": [
+        "R014",
+        "R011",
+        "R015"
+      ],
+      "classification": {
+        "severity": "high",
+        "component": "util",
+        "confidence": 0.75,
+        "reasoning": "Heuristic classifier matched keywords for severity=high and component=util."
+      }
+    },
+    {
+      "case_id": "C11",
+      "severity_match": true,
+      "component_match": true,
+      "top1_retrieval_match": true,
+      "top3_retrieval_match": true,
+      "suggested_diff_parses": true,
+      "suggested_files_overlap": 0.5,
+      "retrieved_ids": [
+        "R015",
+        "R016",
+        "R011"
+      ],
+      "classification": {
+        "severity": "high",
+        "component": "api",
+        "confidence": 0.85,
+        "reasoning": "Heuristic classifier matched keywords for severity=high and component=api."
+      }
+    },
+    {
+      "case_id": "C12",
+      "severity_match": true,
+      "component_match": true,
+      "top1_retrieval_match": true,
+      "top3_retrieval_match": true,
+      "suggested_diff_parses": true,
+      "suggested_files_overlap": 0.5,
+      "retrieved_ids": [
+        "R016",
+        "R015",
+        "R001"
+      ],
+      "classification": {
+        "severity": "high",
+        "component": "api",
+        "confidence": 0.75,
+        "reasoning": "Heuristic classifier matched keywords for severity=high and component=api."
+      }
+    },
+    {
+      "case_id": "C13",
+      "severity_match": true,
+      "component_match": true,
+      "top1_retrieval_match": true,
+      "top3_retrieval_match": true,
+      "suggested_diff_parses": true,
+      "suggested_files_overlap": 0.5,
+      "retrieved_ids": [
+        "R017",
+        "R030",
+        "R016"
+      ],
+      "classification": {
+        "severity": "medium",
+        "component": "api",
+        "confidence": 0.7,
+        "reasoning": "Heuristic classifier matched keywords for severity=medium and component=api."
+      }
+    },
+    {
+      "case_id": "C14",
+      "severity_match": false,
+      "component_match": true,
+      "top1_retrieval_match": true,
+      "top3_retrieval_match": true,
+      "suggested_diff_parses": true,
+      "suggested_files_overlap": 0.5,
+      "retrieved_ids": [
+        "R018",
+        "R006",
+        "R015"
+      ],
+      "classification": {
+        "severity": "high",
+        "component": "api",
+        "confidence": 0.65,
+        "reasoning": "Heuristic classifier matched keywords for severity=high and component=api."
+      }
+    },
+    {
+      "case_id": "C15",
+      "severity_match": false,
+      "component_match": true,
+      "top1_retrieval_match": true,
+      "top3_retrieval_match": true,
+      "suggested_diff_parses": true,
+      "suggested_files_overlap": 0.5,
+      "retrieved_ids": [
+        "R019",
+        "R030",
+        "R026"
+      ],
+      "classification": {
+        "severity": "medium",
+        "component": "api",
+        "confidence": 0.65,
+        "reasoning": "Heuristic classifier matched keywords for severity=medium and component=api."
+      }
+    },
+    {
+      "case_id": "C16",
+      "severity_match": true,
+      "component_match": true,
+      "top1_retrieval_match": true,
+      "top3_retrieval_match": true,
+      "suggested_diff_parses": true,
+      "suggested_files_overlap": 0.5,
+      "retrieved_ids": [
+        "R021",
+        "R013",
+        "R024"
+      ],
+      "classification": {
+        "severity": "medium",
+        "component": "build",
+        "confidence": 0.75,
+        "reasoning": "Heuristic classifier matched keywords for severity=medium and component=build."
+      }
+    },
+    {
+      "case_id": "C17",
+      "severity_match": false,
+      "component_match": true,
+      "top1_retrieval_match": true,
+      "top3_retrieval_match": true,
+      "suggested_diff_parses": true,
+      "suggested_files_overlap": 0.5,
+      "retrieved_ids": [
+        "R023",
+        "R011",
+        "R015"
+      ],
+      "classification": {
+        "severity": "medium",
+        "component": "build",
+        "confidence": 0.65,
+        "reasoning": "Heuristic classifier matched keywords for severity=medium and component=build."
+      }
+    },
+    {
+      "case_id": "C18",
+      "severity_match": true,
+      "component_match": false,
+      "top1_retrieval_match": true,
+      "top3_retrieval_match": true,
+      "suggested_diff_parses": true,
+      "suggested_files_overlap": 0.5,
+      "retrieved_ids": [
+        "R024",
+        "R025",
+        "R028"
+      ],
+      "classification": {
+        "severity": "medium",
+        "component": "tests",
+        "confidence": 0.65,
+        "reasoning": "Heuristic classifier matched keywords for severity=medium and component=tests."
+      }
+    },
+    {
+      "case_id": "C19",
+      "severity_match": true,
+      "component_match": true,
+      "top1_retrieval_match": true,
+      "top3_retrieval_match": true,
+      "suggested_diff_parses": true,
+      "suggested_files_overlap": 0.5,
+      "retrieved_ids": [
+        "R025",
+        "R005",
+        "R030"
+      ],
+      "classification": {
+        "severity": "medium",
+        "component": "tests",
+        "confidence": 0.65,
+        "reasoning": "Heuristic classifier matched keywords for severity=medium and component=tests."
+      }
+    },
+    {
+      "case_id": "C20",
+      "severity_match": false,
+      "component_match": false,
+      "top1_retrieval_match": true,
+      "top3_retrieval_match": true,
+      "suggested_diff_parses": true,
+      "suggested_files_overlap": 0.5,
+      "retrieved_ids": [
+        "R026",
+        "R001",
+        "R016"
+      ],
+      "classification": {
+        "severity": "high",
+        "component": "core",
+        "confidence": 0.7,
+        "reasoning": "Heuristic classifier matched keywords for severity=high and component=core."
+      }
+    }
+  ]
+}
