@@ -168,17 +168,23 @@ def _persist(
 
 @app.get("/v1/triage/{triage_id}", response_model=TriageResponse)
 def get_triage(triage_id: int) -> TriageResponse:
-    with _session() as session:
-        row = session.get(TriageResult, triage_id)
-        if row is None:
-            raise HTTPException(status_code=404, detail="triage_id not found")
-        return TriageResponse(
-            triage_id=int(row.id),
-            classification=row.classification,
-            retrieved=[{"resolution_id": rid} for rid in row.retrieved_ids],
-            suggestion=row.suggestion,
-            latency_ms=row.total_latency_ms,
-        )
+    try:
+        with _session() as session:
+            row = session.get(TriageResult, triage_id)
+            if row is None:
+                raise HTTPException(status_code=404, detail="triage_id not found")
+            return TriageResponse(
+                triage_id=int(row.id),
+                classification=row.classification,
+                retrieved=[{"resolution_id": rid} for rid in row.retrieved_ids],
+                suggestion=row.suggestion,
+                latency_ms=row.total_latency_ms,
+            )
+    except HTTPException:
+        raise
+    except Exception as exc:  # noqa: BLE001 - surface as 503 rather than 500
+        log.warning("get_triage failed: %s", exc)
+        raise HTTPException(status_code=503, detail="persistence unavailable") from exc
 
 
 @app.get("/v1/resolutions", response_model=ResolutionsPage)
@@ -188,28 +194,32 @@ def list_resolutions(
     severity: str | None = Query(default=None),
     limit: int = Query(default=20, ge=1, le=100),
 ) -> ResolutionsPage:
-    with _session() as session:
-        stmt = select(Resolution).order_by(Resolution.id)
-        if cursor is not None:
-            stmt = stmt.where(Resolution.id > cursor)
-        if component is not None:
-            stmt = stmt.where(Resolution.component == component)
-        if severity is not None:
-            stmt = stmt.where(Resolution.severity == severity)
-        stmt = stmt.limit(limit + 1)
-        rows = session.execute(stmt).scalars().all()
-        has_more = len(rows) > limit
-        items = rows[:limit]
-        return ResolutionsPage(
-            items=[
-                ResolutionView(
-                    id=r.id,
-                    severity=r.severity,
-                    component=r.component,
-                    bug_report=r.bug_report,
-                    files_changed=list(r.files_changed),
-                )
-                for r in items
-            ],
-            next_cursor=items[-1].id if has_more and items else None,
-        )
+    try:
+        with _session() as session:
+            stmt = select(Resolution).order_by(Resolution.id)
+            if cursor is not None:
+                stmt = stmt.where(Resolution.id > cursor)
+            if component is not None:
+                stmt = stmt.where(Resolution.component == component)
+            if severity is not None:
+                stmt = stmt.where(Resolution.severity == severity)
+            stmt = stmt.limit(limit + 1)
+            rows = session.execute(stmt).scalars().all()
+            has_more = len(rows) > limit
+            items = rows[:limit]
+            return ResolutionsPage(
+                items=[
+                    ResolutionView(
+                        id=r.id,
+                        severity=r.severity,
+                        component=r.component,
+                        bug_report=r.bug_report,
+                        files_changed=list(r.files_changed),
+                    )
+                    for r in items
+                ],
+                next_cursor=items[-1].id if has_more and items else None,
+            )
+    except Exception as exc:  # noqa: BLE001 - surface as 503 rather than 500
+        log.warning("list_resolutions failed: %s", exc)
+        raise HTTPException(status_code=503, detail="persistence unavailable") from exc
