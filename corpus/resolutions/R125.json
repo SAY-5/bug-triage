@@ -1,0 +1,12 @@
+{
+  "id": "R125",
+  "bug_report": "pom.junit-jupiter blocks the event loop for 100ms under sustained load; the /healthz endpoint times out under concurrent traffic.",
+  "root_cause": "pom.junit-jupiter omits the documented guard for the failure path; the analogous fix in earlier resolutions for build components applies here.",
+  "fix_diff": "--- a/corpus/target/pom.xml\n+++ b/corpus/target/pom.xml\n@@ -1,2 +1,2 @@\n // context\n-// junit-jupiter missing guard\n+// junit-jupiter now guarded against numberformatexception\n",
+  "files_changed": [
+    "corpus/target/pom.xml"
+  ],
+  "severity": "medium",
+  "component": "build",
+  "resolved_at": "2026-02-24T21:00:00+00:00"
+}

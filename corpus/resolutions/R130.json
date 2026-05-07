@@ -1,0 +1,12 @@
+{
+  "id": "R130",
+  "bug_report": "Validation.requireNonNull skips an explicit null guard at the entry point, so callers see an opaque NPE rather than a clean validation error.",
+  "root_cause": "Validation.requireNonNull omits the documented guard for the failure path; the analogous fix in earlier resolutions for util components applies here.",
+  "fix_diff": "--- a/corpus/target/src/main/java/com/example/calc/Validation.java\n+++ b/corpus/target/src/main/java/com/example/calc/Validation.java\n@@ -1,2 +1,2 @@\n // context\n-// requireNonNull missing guard\n+// requireNonNull now guarded against numberformatexception\n",
+  "files_changed": [
+    "corpus/target/src/main/java/com/example/calc/Validation.java"
+  ],
+  "severity": "medium",
+  "component": "util",
+  "resolved_at": "2026-02-26T03:00:00+00:00"
+}

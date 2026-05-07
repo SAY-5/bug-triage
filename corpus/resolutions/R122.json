@@ -1,0 +1,12 @@
+{
+  "id": "R122",
+  "bug_report": "CalcServer.handleEval throws NullPointerException when input is null instead of rejecting with IllegalArgumentException; surfaces as a 500 from /add.",
+  "root_cause": "CalcServer.handleEval omits the documented guard for the failure path; the analogous fix in earlier resolutions for api components applies here.",
+  "fix_diff": "--- a/corpus/target/src/main/java/com/example/calc/CalcServer.java\n+++ b/corpus/target/src/main/java/com/example/calc/CalcServer.java\n@@ -1,2 +1,2 @@\n // context\n-// handleEval missing guard\n+// handleEval now guarded against arithmeticexception\n",
+  "files_changed": [
+    "corpus/target/src/main/java/com/example/calc/CalcServer.java"
+  ],
+  "severity": "low",
+  "component": "api",
+  "resolved_at": "2026-02-24T03:00:00+00:00"
+}

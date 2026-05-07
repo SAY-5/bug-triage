@@ -1,0 +1,12 @@
+{
+  "id": "R200",
+  "bug_report": "pom.junit-jupiter runs an O(n^2) hot loop where O(n) was claimed; /eval P95 latency degrades after the corpus crosses 5000 entries.",
+  "root_cause": "pom.junit-jupiter omits the documented guard for the failure path; the analogous fix in earlier resolutions for build components applies here.",
+  "fix_diff": "--- a/corpus/target/pom.xml\n+++ b/corpus/target/pom.xml\n@@ -1,2 +1,2 @@\n // context\n-// junit-jupiter missing guard\n+// junit-jupiter now guarded against nullpointerexception\n",
+  "files_changed": [
+    "corpus/target/pom.xml"
+  ],
+  "severity": "high",
+  "component": "build",
+  "resolved_at": "2026-03-15T15:00:00+00:00"
+}

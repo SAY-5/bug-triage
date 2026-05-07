@@ -1,0 +1,12 @@
+{
+  "id": "R106",
+  "bug_report": "Calculator.incrementCounter fails to handle an empty operand stack and crashes the parser before the per-request error mapper can run.",
+  "root_cause": "Calculator.incrementCounter omits the documented guard for the failure path; the analogous fix in earlier resolutions for core components applies here.",
+  "fix_diff": "--- a/corpus/target/src/main/java/com/example/calc/Calculator.java\n+++ b/corpus/target/src/main/java/com/example/calc/Calculator.java\n@@ -1,2 +1,2 @@\n // context\n-// incrementCounter missing guard\n+// incrementCounter now guarded against illegalargumentexception\n",
+  "files_changed": [
+    "corpus/target/src/main/java/com/example/calc/Calculator.java"
+  ],
+  "severity": "high",
+  "component": "core",
+  "resolved_at": "2026-02-20T03:00:00+00:00"
+}

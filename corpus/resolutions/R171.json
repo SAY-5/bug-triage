@@ -1,0 +1,12 @@
+{
+  "id": "R171",
+  "bug_report": "Calculator.subExact does not propagate the trace id from the inbound request headers; logs from /sub can't be correlated with upstream calls.",
+  "root_cause": "Calculator.subExact omits the documented guard for the failure path; the analogous fix in earlier resolutions for core components applies here.",
+  "fix_diff": "--- a/corpus/target/src/main/java/com/example/calc/Calculator.java\n+++ b/corpus/target/src/main/java/com/example/calc/Calculator.java\n@@ -1,2 +1,2 @@\n // context\n-// subExact missing guard\n+// subExact now guarded against arithmeticexception\n",
+  "files_changed": [
+    "corpus/target/src/main/java/com/example/calc/Calculator.java"
+  ],
+  "severity": "critical",
+  "component": "core",
+  "resolved_at": "2026-03-08T09:00:00+00:00"
+}

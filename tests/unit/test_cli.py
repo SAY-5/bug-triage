@@ -17,7 +17,7 @@ def test_index_prints_resolution_count(monkeypatch: pytest.MonkeyPatch) -> None:
     result = runner.invoke(cli, ["index"])
     assert result.exit_code == 0, result.output
     payload = json.loads(result.output)
-    assert payload["resolutions"] == 30
+    assert payload["resolutions"] == 200
     assert payload["dim"] == 384
 
 

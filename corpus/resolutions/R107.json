@@ -1,0 +1,12 @@
+{
+  "id": "R107",
+  "bug_report": "CalcServer.handleAdd computes the cache key on the unsanitized request body, letting attacker-controlled keys collide with legit ones.",
+  "root_cause": "CalcServer.handleAdd omits the documented guard for the failure path; the analogous fix in earlier resolutions for api components applies here.",
+  "fix_diff": "--- a/corpus/target/src/main/java/com/example/calc/CalcServer.java\n+++ b/corpus/target/src/main/java/com/example/calc/CalcServer.java\n@@ -1,2 +1,2 @@\n // context\n-// handleAdd missing guard\n+// handleAdd now guarded against arithmeticexception\n",
+  "files_changed": [
+    "corpus/target/src/main/java/com/example/calc/CalcServer.java"
+  ],
+  "severity": "critical",
+  "component": "api",
+  "resolved_at": "2026-02-20T09:00:00+00:00"
+}

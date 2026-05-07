@@ -114,9 +114,26 @@ jobs:
           RUN_EVAL_SMOKE: "1"
         run: poetry run pytest tests/eval -q
 
+  bench-regress:
+    runs-on: ubuntu-latest
+    needs: [lint, typecheck]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install poetry
+        run: pipx install "poetry==${POETRY_VERSION}"
+      - name: Install
+        run: poetry install --with dev
+      - name: bench-regress
+        env:
+          HASH_EMBEDDER: "1"
+        run: poetry run python -m bench.regress
+
   build:
     runs-on: ubuntu-latest
-    needs: [lint, typecheck, test-py, java-build, eval-smoke]
+    needs: [lint, typecheck, test-py, java-build, eval-smoke, bench-regress]
     steps:
       - uses: actions/checkout@v4
       - uses: docker/setup-buildx-action@v3

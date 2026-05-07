@@ -1,4 +1,4 @@
-.PHONY: dev install migrate seed index test test-property lint typecheck eval eval-smoke java-build up down clean
+.PHONY: dev install migrate seed index test test-property bench bench-regress lint typecheck eval eval-smoke java-build up down clean
 
 POETRY ?= poetry
 PYTHON ?= $(POETRY) run python
@@ -26,6 +26,12 @@ test-cov:
 
 test-property:
 	HASH_EMBEDDER=1 $(POETRY) run pytest tests/property -q
+
+bench:
+	HASH_EMBEDDER=1 $(POETRY) run python -m bench.harness
+
+bench-regress:
+	HASH_EMBEDDER=1 $(POETRY) run python -m bench.regress
 
 lint:
 	$(POETRY) run ruff check src tests
