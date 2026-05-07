@@ -13,7 +13,8 @@ from sqlalchemy import create_engine, select
 from sqlalchemy.engine import Engine
 from sqlalchemy.orm import Session, sessionmaker
 
-from bug_triage.applier import apply_and_test
+from bug_triage.applier import ApplyResult, TestResult, apply_diff, clone_target, run_tests
+from bug_triage.auto_pr import AutoPRConfig, AutoPRResult, maybe_open_pr
 from bug_triage.classifier import ClassifierResult
 from bug_triage.corpus import embed_resolutions, load_resolutions
 from bug_triage.embedder import Embedder, build_embedder
@@ -23,7 +24,7 @@ from bug_triage.providers import build_provider
 from bug_triage.providers.base import ChatProvider
 from bug_triage.retriever import ResolutionMatch
 from bug_triage.settings import Settings, get_settings
-from bug_triage.suggester import SuggestionResult
+from bug_triage.suggester import SuggesterOutput, SuggestionResult
 
 log = logging.getLogger("bug_triage.api")
 
@@ -79,6 +80,7 @@ class TriageResponse(BaseModel):
     latency_ms: int
     apply_result: dict[str, object] | None = None
     test_result: dict[str, object] | None = None
+    auto_pr: dict[str, object] | None = None
 
 
 class ResolutionView(BaseModel):
@@ -133,8 +135,13 @@ def triage(
     )
     apply_view: dict[str, object] | None = None
     test_view: dict[str, object] | None = None
+    auto_pr_view: dict[str, object] | None = None
     if body.apply_and_test:
-        apply_view, test_view = _run_apply_and_test(outcome.suggestion.output.suggested_diff)
+        apply_view, test_view, auto_pr_view = _run_apply_and_test(
+            outcome.bug_report,
+            outcome.suggestion.output,
+            outcome.retrieved,
+        )
     return TriageResponse(
         triage_id=triage_id,
         classification=outcome.classification.output.model_dump(),
@@ -143,11 +150,16 @@ def triage(
         latency_ms=outcome.latency_ms,
         apply_result=apply_view,
         test_result=test_view,
+        auto_pr=auto_pr_view,
     )
 
 
-def _run_apply_and_test(diff: str) -> tuple[dict[str, object], dict[str, object]]:
-    """Clone corpus/target into a temp dir, apply, run tests; degrade gracefully."""
+def _run_apply_and_test(
+    bug_report: str,
+    suggestion: SuggesterOutput,
+    retrieved: list[ResolutionMatch],
+) -> tuple[dict[str, object], dict[str, object], dict[str, object]]:
+    """Clone corpus/target -> apply -> run tests -> maybe open auto-PR."""
 
     import tempfile
     from pathlib import Path as _Path
@@ -155,25 +167,65 @@ def _run_apply_and_test(diff: str) -> tuple[dict[str, object], dict[str, object]
     source = state.settings.corpus_root / "target"
     with tempfile.TemporaryDirectory(prefix="bug-triage-apply-") as tmp:
         work_dir = _Path(tmp) / "clone"
-        apply_result, test_result = apply_and_test(diff, source=source, work_dir=work_dir)
+        clone_target(source, work_dir)
+        apply_result = apply_diff(suggestion.suggested_diff, work_dir)
+        if apply_result.success:
+            test_result = run_tests(work_dir)
+        else:
+            test_result = TestResult(
+                build_success=False,
+                tests_run=0,
+                tests_passed=0,
+                tests_failed=0,
+                skipped=apply_result.skipped,
+                reason=apply_result.reason or "diff did not apply cleanly",
+            )
+        auto_pr_result = maybe_open_pr(
+            bug_report=bug_report,
+            suggestion=suggestion,
+            retrieved=retrieved,
+            apply_result=apply_result,
+            test_result=test_result,
+            project_dir=work_dir,
+            config=AutoPRConfig.from_env(),
+        )
     return (
-        {
-            "success": apply_result.success,
-            "hunks_applied": apply_result.hunks_applied,
-            "hunks_rejected": apply_result.hunks_rejected,
-            "conflict_files": apply_result.conflict_files,
-            "skipped": apply_result.skipped,
-            "reason": apply_result.reason,
-        },
-        {
-            "build_success": test_result.build_success,
-            "tests_run": test_result.tests_run,
-            "tests_passed": test_result.tests_passed,
-            "tests_failed": test_result.tests_failed,
-            "skipped": test_result.skipped,
-            "reason": test_result.reason,
-        },
+        _apply_view(apply_result),
+        _test_view(test_result),
+        _auto_pr_view(auto_pr_result),
     )
+
+
+def _apply_view(r: ApplyResult) -> dict[str, object]:
+    return {
+        "success": r.success,
+        "hunks_applied": r.hunks_applied,
+        "hunks_rejected": r.hunks_rejected,
+        "conflict_files": r.conflict_files,
+        "skipped": r.skipped,
+        "reason": r.reason,
+    }
+
+
+def _test_view(r: TestResult) -> dict[str, object]:
+    return {
+        "build_success": r.build_success,
+        "tests_run": r.tests_run,
+        "tests_passed": r.tests_passed,
+        "tests_failed": r.tests_failed,
+        "skipped": r.skipped,
+        "reason": r.reason,
+    }
+
+
+def _auto_pr_view(r: AutoPRResult) -> dict[str, object]:
+    return {
+        "enabled": r.enabled,
+        "opened": r.opened,
+        "skipped_reason": r.skipped_reason,
+        "pr_url": r.pr_url,
+        "branch": r.branch,
+    }
 
 
 def _match_view(m: ResolutionMatch) -> dict[str, object]:

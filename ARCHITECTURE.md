@@ -45,10 +45,30 @@ returned prose — the suggester zeros out the confidence and surfaces the
 parse error. Downstream consumers can detect this with one boolean check
 (`diff_parses`) instead of trying to repair model output.
 
-The trade-off: a stricter parser would also verify the diff *applies* to
-the current source. We deliberately stop at parse-validity. Apply-time
-checks belong in a separate worker that has the working tree available; the
-prompt step's job is to never emit syntactically invalid output.
+The apply-time validator now lives next door in `bug_triage.applier`: when
+`POST /v1/triage` is called with `apply_and_test=true`, the suggested diff
+is applied to a clone of `corpus/target/` (`git apply --reject`) and
+`mvn -B verify` is run against the result. The response includes counts of
+applied vs rejected hunks and surefire's `tests_run`, `tests_passed`,
+`tests_failed` numbers. Both legs degrade gracefully when `git` or `mvn`
+isn't on PATH (`skipped=true` plus a reason), so light CI configurations
+keep working.
+
+## Auto-PR mode
+
+When `AUTO_PR=1` and the suggester clears every guardrail, the API calls
+`bug_triage.auto_pr.maybe_open_pr` which delegates to the `gh` CLI to spawn
+a draft PR against `AUTO_PR_REPO`. The guardrails are absolute:
+
+- `confidence` must be `>= AUTO_PR_CONFIDENCE_THRESHOLD` (default 0.8)
+- `apply_result.hunks_rejected` must be 0
+- `test_result.tests_failed` must be 0 and `build_success` must be true
+- the PR is always created with `--draft` so a human reviews before merge
+
+Default is `AUTO_PR=0` (off). Production deployments opt in. Tests use the
+`AUTO_PR_GH_BINARY` override to point at a wrapper script that records its
+argv to a JSON file, so the captured `gh pr create` invocation can be
+asserted against without contacting GitHub.
 
 ## Prompt versioning approach
 
@@ -71,8 +91,8 @@ retrieval pipeline.
 
 ## What's deliberately not here
 
-- **No auto-application of diffs.** Suggester emits, downstream applies.
-  Two services, two failure modes, two audit logs.
+- **No auto-merge.** Auto-PR mode opens *draft* PRs only, gated on
+  confidence + clean apply + green tests. Merge is always a human action.
 - **No agent loop.** One forward pass per request. No tool calls, no
   retries, no back-and-forth. If the diff doesn't parse, that's the answer.
 - **No fine-tuning.** Prompts only. We bet on closed-enum validation +

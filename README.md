@@ -102,6 +102,7 @@ Reading the table:
 | `bug_triage.cli` | Click CLI: `bug-triage index`, `triage --file`, `eval run` |
 | `bug_triage.eval_harness` | per-case scoring + JSON/Markdown report |
 | `bug_triage.applier` | apply suggested diff to a clone of `corpus/target/` and run `mvn -B verify` |
+| `bug_triage.auto_pr` | env-gated draft-PR creation via `gh pr create` with hard guardrails |
 | `corpus/target/` | Maven `calc-server` toy project; the retrieval ground |
 | `corpus/resolutions/` | 30 hand-written + 170 synthetic `(bug, fix)` JSON exemplars (200 total) |
 | `bench/` | bench harness + bench-regress gate over the 200-resolution corpus |
@@ -127,6 +128,31 @@ Both stages degrade gracefully:
 The `apply-and-test-smoke` CI job sets up JDK 21 + Maven and runs
 `scripts/apply_and_test_smoke.py` against three hand-picked resolutions
 (R001, R005, R006) so each PR exercises the full loop.
+
+## Auto-PR mode
+
+When `AUTO_PR=1`, `apply_and_test=true` succeeds, and the suggester clears
+every guardrail, the API spawns a draft PR via `gh pr create`. Configure:
+
+| env var | default | purpose |
+| --- | --- | --- |
+| `AUTO_PR` | `0` | flip to `1` to enable |
+| `AUTO_PR_REPO` | _required_ | target repo, e.g. `owner/fork` |
+| `AUTO_PR_CONFIDENCE_THRESHOLD` | `0.8` | minimum suggester confidence |
+| `AUTO_PR_GH_BINARY` | `gh` on PATH | override (used by tests) |
+
+Hard guardrails (all must hold; otherwise `auto_pr.skipped_reason` is set):
+
+1. `suggestion.confidence >= AUTO_PR_CONFIDENCE_THRESHOLD`
+2. `apply_result.hunks_rejected == 0`
+3. `apply_result.success == true`
+4. `test_result.tests_failed == 0`
+5. `test_result.build_success == true`
+6. PR is always created with `--draft` for human review
+
+The default is `AUTO_PR=0` (off). Production deployments opt in. The test
+suite uses `AUTO_PR_GH_BINARY` to point at a wrapper script that records
+its argv -- no real GitHub calls happen in CI.
 
 ## Quickstart
 
