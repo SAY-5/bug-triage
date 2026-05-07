@@ -3,16 +3,16 @@
 from __future__ import annotations
 
 import json
-import os
 from pathlib import Path
 
+import pytest
 from click.testing import CliRunner
 
 from bug_triage.cli import cli
 
 
-def test_index_prints_resolution_count(tmp_path: Path) -> None:
-    os.environ["HASH_EMBEDDER"] = "1"
+def test_index_prints_resolution_count(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("HASH_EMBEDDER", "1")
     runner = CliRunner()
     result = runner.invoke(cli, ["index"])
     assert result.exit_code == 0, result.output
@@ -21,9 +21,9 @@ def test_index_prints_resolution_count(tmp_path: Path) -> None:
     assert payload["dim"] == 384
 
 
-def test_triage_command_runs_full_pipeline(tmp_path: Path) -> None:
-    os.environ["HASH_EMBEDDER"] = "1"
-    os.environ["PROVIDER"] = "fake"
+def test_triage_command_runs_full_pipeline(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("HASH_EMBEDDER", "1")
+    monkeypatch.setenv("PROVIDER", "fake")
     bug = tmp_path / "bug.txt"
     bug.write_text("Calculator.div returns Infinity for zero divisor at /div")
     runner = CliRunner()
@@ -37,8 +37,8 @@ def test_triage_command_runs_full_pipeline(tmp_path: Path) -> None:
     assert payload["retrieved"][0]["resolution_id"] == "R001"
 
 
-def test_eval_run_writes_baseline(tmp_path: Path) -> None:
-    os.environ["HASH_EMBEDDER"] = "1"
+def test_eval_run_writes_baseline(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("HASH_EMBEDDER", "1")
     out = tmp_path / "baseline.json"
     runner = CliRunner()
     result = runner.invoke(

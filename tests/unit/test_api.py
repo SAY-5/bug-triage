@@ -1,14 +1,13 @@
 """API surface tests via FastAPI TestClient.
 
-The lifespan boots the in-memory pipeline and points DATABASE_URL at a
-nonexistent server so persistence falls back gracefully. We assert the
-pipeline returns the expected shape and that filters/cursor pagination work
-without ever needing a real Postgres.
+We point DATABASE_URL at a nonexistent server *only inside the fixture* so
+persistence falls back gracefully. The env var is restored on teardown so
+the integration suite (which runs in the same pytest process) sees the
+original DATABASE_URL.
 """
 
 from __future__ import annotations
 
-import os
 from collections.abc import Iterator
 
 import pytest
@@ -16,16 +15,16 @@ from fastapi.testclient import TestClient
 
 
 @pytest.fixture(scope="module")
-def client() -> Iterator[TestClient]:
-    os.environ["HASH_EMBEDDER"] = "1"
-    os.environ["PROVIDER"] = "fake"
-    # Point DB at an unreachable host so persistence fails fast and the
-    # API returns triage_id=None instead of hanging.
-    os.environ["DATABASE_URL"] = "postgresql+psycopg://x:x@127.0.0.1:1/none"
+def client(request: pytest.FixtureRequest) -> Iterator[TestClient]:
+    monkeypatch = pytest.MonkeyPatch()
+    monkeypatch.setenv("HASH_EMBEDDER", "1")
+    monkeypatch.setenv("PROVIDER", "fake")
+    monkeypatch.setenv("DATABASE_URL", "postgresql+psycopg://x:x@127.0.0.1:1/none")
     from bug_triage.api import app
 
     with TestClient(app) as c:
         yield c
+    monkeypatch.undo()
 
 
 def test_healthz(client: TestClient) -> None:
