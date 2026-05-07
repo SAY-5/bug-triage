@@ -13,6 +13,7 @@ from sqlalchemy import create_engine, select
 from sqlalchemy.engine import Engine
 from sqlalchemy.orm import Session, sessionmaker
 
+from bug_triage.applier import apply_and_test
 from bug_triage.classifier import ClassifierResult
 from bug_triage.corpus import embed_resolutions, load_resolutions
 from bug_triage.embedder import Embedder, build_embedder
@@ -59,6 +60,15 @@ app = FastAPI(title="bug-triage", version="0.1.0", lifespan=lifespan)
 
 class TriageRequest(BaseModel):
     bug_report: str = Field(min_length=1, max_length=10_000)
+    apply_and_test: bool = Field(
+        default=False,
+        description=(
+            "When true, the suggested diff is applied to a clone of "
+            "corpus/target/ and `mvn -B verify` is run. The response includes "
+            "apply_result and test_result. If git or maven are unavailable, "
+            "those fields surface skipped=true with a reason."
+        ),
+    )
 
 
 class TriageResponse(BaseModel):
@@ -67,6 +77,8 @@ class TriageResponse(BaseModel):
     retrieved: list[dict[str, object]]
     suggestion: dict[str, object]
     latency_ms: int
+    apply_result: dict[str, object] | None = None
+    test_result: dict[str, object] | None = None
 
 
 class ResolutionView(BaseModel):
@@ -119,12 +131,48 @@ def triage(
         outcome.suggestion,
         outcome.latency_ms,
     )
+    apply_view: dict[str, object] | None = None
+    test_view: dict[str, object] | None = None
+    if body.apply_and_test:
+        apply_view, test_view = _run_apply_and_test(outcome.suggestion.output.suggested_diff)
     return TriageResponse(
         triage_id=triage_id,
         classification=outcome.classification.output.model_dump(),
         retrieved=[_match_view(m) for m in outcome.retrieved],
         suggestion=outcome.suggestion.output.model_dump(),
         latency_ms=outcome.latency_ms,
+        apply_result=apply_view,
+        test_result=test_view,
+    )
+
+
+def _run_apply_and_test(diff: str) -> tuple[dict[str, object], dict[str, object]]:
+    """Clone corpus/target into a temp dir, apply, run tests; degrade gracefully."""
+
+    import tempfile
+    from pathlib import Path as _Path
+
+    source = state.settings.corpus_root / "target"
+    with tempfile.TemporaryDirectory(prefix="bug-triage-apply-") as tmp:
+        work_dir = _Path(tmp) / "clone"
+        apply_result, test_result = apply_and_test(diff, source=source, work_dir=work_dir)
+    return (
+        {
+            "success": apply_result.success,
+            "hunks_applied": apply_result.hunks_applied,
+            "hunks_rejected": apply_result.hunks_rejected,
+            "conflict_files": apply_result.conflict_files,
+            "skipped": apply_result.skipped,
+            "reason": apply_result.reason,
+        },
+        {
+            "build_success": test_result.build_success,
+            "tests_run": test_result.tests_run,
+            "tests_passed": test_result.tests_passed,
+            "tests_failed": test_result.tests_failed,
+            "skipped": test_result.skipped,
+            "reason": test_result.reason,
+        },
     )
 
 
