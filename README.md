@@ -101,10 +101,32 @@ Reading the table:
 | `bug_triage.api` | FastAPI surface (`/v1/triage`, `/v1/resolutions`, `/healthz`) |
 | `bug_triage.cli` | Click CLI: `bug-triage index`, `triage --file`, `eval run` |
 | `bug_triage.eval_harness` | per-case scoring + JSON/Markdown report |
+| `bug_triage.applier` | apply suggested diff to a clone of `corpus/target/` and run `mvn -B verify` |
 | `corpus/target/` | Maven `calc-server` toy project; the retrieval ground |
 | `corpus/resolutions/` | 30 hand-written + 170 synthetic `(bug, fix)` JSON exemplars (200 total) |
 | `bench/` | bench harness + bench-regress gate over the 200-resolution corpus |
 | `eval/suites/triage_v1.yaml` | 20 paraphrased incoming bug reports with ground truth |
+
+## Diff apply-and-test loop
+
+`POST /v1/triage` accepts an optional `apply_and_test: true` flag. When set,
+after the suggester returns a diff the API:
+
+1. Copies `corpus/target/` into a temp directory.
+2. Runs `git apply --reject` against the clone with the suggested diff.
+3. If apply succeeds with zero rejected hunks, runs `mvn -B verify` and
+   parses the surefire summary line for `tests_run`, `tests_passed`,
+   `tests_failed`.
+4. Returns `apply_result` and `test_result` alongside the usual response.
+
+Both stages degrade gracefully:
+
+- If `git` isn't on PATH, `apply_result.skipped=true` with `reason="git not on PATH"`.
+- If `mvn` isn't on PATH, `test_result.skipped=true` with `reason="mvn not on PATH"`.
+
+The `apply-and-test-smoke` CI job sets up JDK 21 + Maven and runs
+`scripts/apply_and_test_smoke.py` against three hand-picked resolutions
+(R001, R005, R006) so each PR exercises the full loop.
 
 ## Quickstart
 
