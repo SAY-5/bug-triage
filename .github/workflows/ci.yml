@@ -81,7 +81,7 @@ jobs:
           HASH_EMBEDDER: "1"
           RUN_INTEGRATION: "1"
           DATABASE_URL: postgresql+psycopg://bug_triage:bug_triage@localhost:5432/bug_triage
-        run: poetry run pytest tests/unit tests/integration --cov=bug_triage --cov-report=term-missing --cov-fail-under=80
+        run: poetry run pytest tests/unit tests/integration tests/property --cov=bug_triage --cov-report=term-missing --cov-fail-under=85
 
   java-build:
     runs-on: ubuntu-latest

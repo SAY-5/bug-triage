@@ -1,4 +1,4 @@
-.PHONY: dev install migrate seed index test lint typecheck eval eval-smoke java-build up down clean
+.PHONY: dev install migrate seed index test test-property lint typecheck eval eval-smoke java-build up down clean
 
 POETRY ?= poetry
 PYTHON ?= $(POETRY) run python
@@ -23,6 +23,9 @@ test:
 
 test-cov:
 	$(POETRY) run pytest --cov=bug_triage --cov-report=term-missing
+
+test-property:
+	HASH_EMBEDDER=1 $(POETRY) run pytest tests/property -q
 
 lint:
 	$(POETRY) run ruff check src tests
