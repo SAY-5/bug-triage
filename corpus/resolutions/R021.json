@@ -1,0 +1,12 @@
+{
+  "id": "R021",
+  "bug_report": "Maven build fails with 'invalid target release: 21' on CI runners that only have JDK 17, because pom.xml requires release 21 without a fallback.",
+  "root_cause": "maven.compiler.release was set to 21 but the CI matrix did not pin Temurin 21.",
+  "fix_diff": "--- a/corpus/target/pom.xml\n+++ b/corpus/target/pom.xml\n@@ -1,2 +1,2 @@\n // context\n-<maven.compiler.release>17</maven.compiler.release>\n+<maven.compiler.release>21</maven.compiler.release>\n",
+  "files_changed": [
+    "corpus/target/pom.xml"
+  ],
+  "severity": "medium",
+  "component": "build",
+  "resolved_at": "2026-02-23T10:25:00+00:00"
+}

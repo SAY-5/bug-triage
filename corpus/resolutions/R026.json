@@ -1,0 +1,12 @@
+{
+  "id": "R026",
+  "bug_report": "CalculatorTest does not assert that Calculator.div throws ArithmeticException on zero divisor; the test silently passes even when the guard is missing.",
+  "root_cause": "Test coverage gap: no assertion of the throw contract for division by zero.",
+  "fix_diff": "--- a/corpus/target/src/test/java/com/example/calc/CalculatorTest.java\n+++ b/corpus/target/src/test/java/com/example/calc/CalculatorTest.java\n@@ -1,2 +1,2 @@\n // context\n-// no zero test\n+assertThrows(ArithmeticException.class, () -> Calculator.div(1L, 0L));\n",
+  "files_changed": [
+    "corpus/target/src/test/java/com/example/calc/CalculatorTest.java"
+  ],
+  "severity": "low",
+  "component": "tests",
+  "resolved_at": "2026-03-05T15:10:00+00:00"
+}

@@ -1,0 +1,12 @@
+{
+  "id": "R025",
+  "bug_report": "CalculatorTest is flaky on parallel runs because Calculator.invocations leaks state between tests; assertEquals fails intermittently.",
+  "root_cause": "Tests did not reset the static counter; parallel execution inherited a non-zero starting value.",
+  "fix_diff": "--- a/corpus/target/src/test/java/com/example/calc/CalculatorTest.java\n+++ b/corpus/target/src/test/java/com/example/calc/CalculatorTest.java\n@@ -1,2 +1,2 @@\n // context\n-// no reset\n+@BeforeEach void resetCounter() { Calculator.resetForTests(); }\n",
+  "files_changed": [
+    "corpus/target/src/test/java/com/example/calc/CalculatorTest.java"
+  ],
+  "severity": "medium",
+  "component": "tests",
+  "resolved_at": "2026-03-03T11:55:00+00:00"
+}

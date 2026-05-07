@@ -1,0 +1,12 @@
+{
+  "id": "R024",
+  "bug_report": "Maven Surefire runs zero tests in CI; the test compile target reports 'no tests in this project' even though CalculatorTest exists.",
+  "root_cause": "Surefire 2.x was inherited from the parent and could not discover JUnit 5 platform tests; 3.x is required.",
+  "fix_diff": "--- a/corpus/target/pom.xml\n+++ b/corpus/target/pom.xml\n@@ -1,2 +1,2 @@\n // context\n-<version>2.22.2</version>\n+<version>3.2.5</version>\n",
+  "files_changed": [
+    "corpus/target/pom.xml"
+  ],
+  "severity": "medium",
+  "component": "build",
+  "resolved_at": "2026-03-01T09:20:00+00:00"
+}

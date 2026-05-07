@@ -1,0 +1,12 @@
+{
+  "id": "R027",
+  "bug_report": "ExpressionParser CalculatorTest case for parenthesized expressions like '2 * (3 + 4)' is missing, so regressions in operator precedence go undetected.",
+  "root_cause": "No JUnit case exercised mixed precedence with parentheses against ExpressionParser.evaluate.",
+  "fix_diff": "--- a/corpus/target/src/test/java/com/example/calc/CalculatorTest.java\n+++ b/corpus/target/src/test/java/com/example/calc/CalculatorTest.java\n@@ -1,2 +1,2 @@\n // context\n-// no precedence test\n+assertEquals(14.0, ExpressionParser.evaluate(\"2 * (3 + 4)\"));\n",
+  "files_changed": [
+    "corpus/target/src/test/java/com/example/calc/CalculatorTest.java"
+  ],
+  "severity": "low",
+  "component": "tests",
+  "resolved_at": "2026-03-07T08:45:00+00:00"
+}

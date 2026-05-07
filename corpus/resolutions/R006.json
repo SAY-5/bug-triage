@@ -1,0 +1,12 @@
+{
+  "id": "R006",
+  "bug_report": "ExpressionParser.evaluate throws NullPointerException when given a null expression instead of a clean IllegalArgumentException.",
+  "root_cause": "The parser assumed a non-null input; null was never validated at the entry point.",
+  "fix_diff": "--- a/corpus/target/src/main/java/com/example/calc/ExpressionParser.java\n+++ b/corpus/target/src/main/java/com/example/calc/ExpressionParser.java\n@@ -1,2 +1,2 @@\n // context\n-// no null check\n+Objects.requireNonNull(expression, \"expression\");\n",
+  "files_changed": [
+    "corpus/target/src/main/java/com/example/calc/ExpressionParser.java"
+  ],
+  "severity": "medium",
+  "component": "core",
+  "resolved_at": "2026-01-20T09:10:00+00:00"
+}

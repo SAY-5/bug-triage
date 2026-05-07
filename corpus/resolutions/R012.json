@@ -1,0 +1,12 @@
+{
+  "id": "R012",
+  "bug_report": "Validation.parseOperand rejects values larger than 1e9 even in callers that want unbounded operands; the cap should be configurable but at least documented.",
+  "root_cause": "MAX_OPERAND was a hard-coded magic number with no bounds-check error message naming the limit.",
+  "fix_diff": "--- a/corpus/target/src/main/java/com/example/calc/Validation.java\n+++ b/corpus/target/src/main/java/com/example/calc/Validation.java\n@@ -1,2 +1,2 @@\n // context\n-// missing bounds error\n+throw new IllegalArgumentException(\"operand \" + name + \" out of range [\" + -MAX_OPERAND + \", \" + MAX_OPERAND + \"]\");\n",
+  "files_changed": [
+    "corpus/target/src/main/java/com/example/calc/Validation.java"
+  ],
+  "severity": "low",
+  "component": "util",
+  "resolved_at": "2026-02-05T14:00:00+00:00"
+}

@@ -1,0 +1,12 @@
+{
+  "id": "R030",
+  "bug_report": "Calculator.resetForTests is package-private but the CalculatorTest in the same package fails to call it because the test source root is wrongly mapped to a different package; CI run reports 'cannot find symbol'.",
+  "root_cause": "src/test/java was created under com/example/Calc instead of com/example/calc; case mismatch hid the package on case-insensitive filesystems.",
+  "fix_diff": "--- a/corpus/target/src/test/java/com/example/calc/CalculatorTest.java\n+++ b/corpus/target/src/test/java/com/example/calc/CalculatorTest.java\n@@ -1,2 +1,2 @@\n // context\n-package com.example.Calc;\n+package com.example.calc;\n",
+  "files_changed": [
+    "corpus/target/src/test/java/com/example/calc/CalculatorTest.java"
+  ],
+  "severity": "medium",
+  "component": "tests",
+  "resolved_at": "2026-03-13T10:40:00+00:00"
+}

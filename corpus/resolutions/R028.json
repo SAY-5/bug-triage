@@ -1,0 +1,12 @@
+{
+  "id": "R028",
+  "bug_report": "Validation.parseOperand has no test for whitespace-only operands; a regression in the isBlank check would go unnoticed.",
+  "root_cause": "Missing assertThrows case for blank operand input in CalculatorTest.",
+  "fix_diff": "--- a/corpus/target/src/test/java/com/example/calc/CalculatorTest.java\n+++ b/corpus/target/src/test/java/com/example/calc/CalculatorTest.java\n@@ -1,2 +1,2 @@\n // context\n-// no blank test\n+assertThrows(IllegalArgumentException.class, () -> Validation.parseOperand(\"a\", \"  \"));\n",
+  "files_changed": [
+    "corpus/target/src/test/java/com/example/calc/CalculatorTest.java"
+  ],
+  "severity": "low",
+  "component": "tests",
+  "resolved_at": "2026-03-09T13:00:00+00:00"
+}

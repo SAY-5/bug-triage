@@ -1,0 +1,12 @@
+{
+  "id": "R005",
+  "bug_report": "Calculator.invocations counter races under concurrent /add load, undercounting requests by ~3%.",
+  "root_cause": "The invocations field was a plain `long` updated with `++`, which is not atomic across threads.",
+  "fix_diff": "--- a/corpus/target/src/main/java/com/example/calc/Calculator.java\n+++ b/corpus/target/src/main/java/com/example/calc/Calculator.java\n@@ -1,2 +1,2 @@\n // context\n-private static long INVOCATIONS = 0;\n+private static final java.util.concurrent.atomic.AtomicLong INVOCATIONS = new java.util.concurrent.atomic.AtomicLong();\n",
+  "files_changed": [
+    "corpus/target/src/main/java/com/example/calc/Calculator.java"
+  ],
+  "severity": "medium",
+  "component": "core",
+  "resolved_at": "2026-01-18T14:45:00+00:00"
+}

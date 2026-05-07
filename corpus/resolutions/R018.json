@@ -1,0 +1,12 @@
+{
+  "id": "R018",
+  "bug_report": "CalcServer.parseQuery throws StringIndexOutOfBoundsException when a query parameter has no '=' sign, instead of treating it as a flag.",
+  "root_cause": "indexOf('=') returning -1 was not handled before the substring call.",
+  "fix_diff": "--- a/corpus/target/src/main/java/com/example/calc/CalcServer.java\n+++ b/corpus/target/src/main/java/com/example/calc/CalcServer.java\n@@ -1,2 +1,2 @@\n // context\n-out.put(part.substring(0, eq), part.substring(eq + 1));\n+if (eq < 0) out.put(part, \"\"); else out.put(part.substring(0, eq), part.substring(eq + 1));\n",
+  "files_changed": [
+    "corpus/target/src/main/java/com/example/calc/CalcServer.java"
+  ],
+  "severity": "medium",
+  "component": "api",
+  "resolved_at": "2026-02-17T09:40:00+00:00"
+}

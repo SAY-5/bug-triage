@@ -1,0 +1,12 @@
+{
+  "id": "R003",
+  "bug_report": "Calculator.mul wraps silently for large operand pairs at the /mul endpoint, returning numbers smaller than either input.",
+  "root_cause": "Multiplication used `*` instead of Math.multiplyExact, allowing silent overflow.",
+  "fix_diff": "--- a/corpus/target/src/main/java/com/example/calc/Calculator.java\n+++ b/corpus/target/src/main/java/com/example/calc/Calculator.java\n@@ -1,2 +1,2 @@\n // context\n-return a * b;\n+return Math.multiplyExact(a, b);\n",
+  "files_changed": [
+    "corpus/target/src/main/java/com/example/calc/Calculator.java"
+  ],
+  "severity": "high",
+  "component": "core",
+  "resolved_at": "2026-01-12T08:30:00+00:00"
+}

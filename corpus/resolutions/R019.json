@@ -1,0 +1,12 @@
+{
+  "id": "R019",
+  "bug_report": "CalcServer /healthz endpoint is missing; load balancer reports the calc-server as unhealthy after deployment.",
+  "root_cause": "No HTTP handler was registered for /healthz; the deploy template assumed one existed.",
+  "fix_diff": "--- a/corpus/target/src/main/java/com/example/calc/CalcServer.java\n+++ b/corpus/target/src/main/java/com/example/calc/CalcServer.java\n@@ -1,2 +1,2 @@\n // context\n-// no healthz\n+server.createContext(\"/healthz\", ex -> respond(ex, 200, \"ok\"));\n",
+  "files_changed": [
+    "corpus/target/src/main/java/com/example/calc/CalcServer.java"
+  ],
+  "severity": "high",
+  "component": "api",
+  "resolved_at": "2026-02-19T14:15:00+00:00"
+}

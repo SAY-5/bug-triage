@@ -1,0 +1,12 @@
+{
+  "id": "R014",
+  "bug_report": "Validation.parseOperand passes the original NumberFormatException message through unchanged, leaking 'For input string: ...' to clients.",
+  "root_cause": "parseOperand caught NumberFormatException but did not wrap it in a domain-specific message.",
+  "fix_diff": "--- a/corpus/target/src/main/java/com/example/calc/Validation.java\n+++ b/corpus/target/src/main/java/com/example/calc/Validation.java\n@@ -1,2 +1,2 @@\n // context\n-throw nfe;\n+throw new IllegalArgumentException(\"operand \" + name + \" is not an integer: \" + raw, nfe);\n",
+  "files_changed": [
+    "corpus/target/src/main/java/com/example/calc/Validation.java"
+  ],
+  "severity": "low",
+  "component": "util",
+  "resolved_at": "2026-02-09T15:50:00+00:00"
+}

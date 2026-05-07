@@ -1,0 +1,12 @@
+{
+  "id": "R017",
+  "bug_report": "CalcServer /eval endpoint truncates UTF-8 multi-byte responses because Content-Length was set to the string length instead of the byte length.",
+  "root_cause": "respond() called sendResponseHeaders with body.length() instead of bytes.length, miscounting non-ASCII responses.",
+  "fix_diff": "--- a/corpus/target/src/main/java/com/example/calc/CalcServer.java\n+++ b/corpus/target/src/main/java/com/example/calc/CalcServer.java\n@@ -1,2 +1,2 @@\n // context\n-ex.sendResponseHeaders(status, body.length());\n+ex.sendResponseHeaders(status, bytes.length);\n",
+  "files_changed": [
+    "corpus/target/src/main/java/com/example/calc/CalcServer.java"
+  ],
+  "severity": "medium",
+  "component": "api",
+  "resolved_at": "2026-02-15T11:05:00+00:00"
+}

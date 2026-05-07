@@ -1,0 +1,12 @@
+{
+  "id": "R015",
+  "bug_report": "CalcServer /add endpoint returns 500 with a stack trace when query parameters are missing instead of a 400 with a clean message.",
+  "root_cause": "binaryOp did not catch IllegalArgumentException from Validation; it propagated to the default error handler.",
+  "fix_diff": "--- a/corpus/target/src/main/java/com/example/calc/CalcServer.java\n+++ b/corpus/target/src/main/java/com/example/calc/CalcServer.java\n@@ -1,2 +1,2 @@\n // context\n-// no catch\n+} catch (IllegalArgumentException iae) { respond(ex, 400, iae.getMessage()); }\n",
+  "files_changed": [
+    "corpus/target/src/main/java/com/example/calc/CalcServer.java"
+  ],
+  "severity": "high",
+  "component": "api",
+  "resolved_at": "2026-02-11T13:30:00+00:00"
+}

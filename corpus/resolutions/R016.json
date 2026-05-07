@@ -1,0 +1,12 @@
+{
+  "id": "R016",
+  "bug_report": "CalcServer /div endpoint returns 500 on division by zero instead of a 422 Unprocessable Entity with the arithmetic error.",
+  "root_cause": "ArithmeticException from Calculator.div was not caught and mapped to a 422 response.",
+  "fix_diff": "--- a/corpus/target/src/main/java/com/example/calc/CalcServer.java\n+++ b/corpus/target/src/main/java/com/example/calc/CalcServer.java\n@@ -1,2 +1,2 @@\n // context\n-// no arith catch\n+} catch (ArithmeticException ae) { respond(ex, 422, ae.getMessage()); }\n",
+  "files_changed": [
+    "corpus/target/src/main/java/com/example/calc/CalcServer.java"
+  ],
+  "severity": "high",
+  "component": "api",
+  "resolved_at": "2026-02-13T16:10:00+00:00"
+}

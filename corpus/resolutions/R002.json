@@ -1,0 +1,12 @@
+{
+  "id": "R002",
+  "bug_report": "Calculator.add silently overflows on Long.MAX_VALUE inputs, returning wrong results; the /add endpoint should reject overflow rather than wrap.",
+  "root_cause": "Calculator.add used `+` instead of Math.addExact, so overflow wrapped to negative numbers without raising.",
+  "fix_diff": "--- a/corpus/target/src/main/java/com/example/calc/Calculator.java\n+++ b/corpus/target/src/main/java/com/example/calc/Calculator.java\n@@ -1,2 +1,2 @@\n // context\n-return a + b;\n+return Math.addExact(a, b);\n",
+  "files_changed": [
+    "corpus/target/src/main/java/com/example/calc/Calculator.java"
+  ],
+  "severity": "high",
+  "component": "core",
+  "resolved_at": "2026-01-09T13:00:00+00:00"
+}

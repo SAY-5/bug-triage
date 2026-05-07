@@ -1,0 +1,12 @@
+{
+  "id": "R011",
+  "bug_report": "Validation.parseOperand accepts blank or whitespace-only strings, allowing /add?a= to crash deeper in Calculator with a misleading NumberFormatException.",
+  "root_cause": "isBlank check was missing; the early validation step let empty input through.",
+  "fix_diff": "--- a/corpus/target/src/main/java/com/example/calc/Validation.java\n+++ b/corpus/target/src/main/java/com/example/calc/Validation.java\n@@ -1,2 +1,2 @@\n // context\n-// no blank check\n+if (raw == null || raw.isBlank()) throw new IllegalArgumentException(\"missing operand: \" + name);\n",
+  "files_changed": [
+    "corpus/target/src/main/java/com/example/calc/Validation.java"
+  ],
+  "severity": "medium",
+  "component": "util",
+  "resolved_at": "2026-02-03T11:20:00+00:00"
+}

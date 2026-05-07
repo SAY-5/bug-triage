@@ -1,0 +1,12 @@
+{
+  "id": "R020",
+  "bug_report": "CalcServer hard-codes port 8080 with no override, so deployments behind a reverse proxy on a different port fail to start.",
+  "root_cause": "main() ignored argv and constructed InetSocketAddress(8080) unconditionally.",
+  "fix_diff": "--- a/corpus/target/src/main/java/com/example/calc/CalcServer.java\n+++ b/corpus/target/src/main/java/com/example/calc/CalcServer.java\n@@ -1,2 +1,2 @@\n // context\n-new InetSocketAddress(8080)\n+new InetSocketAddress(args.length > 0 ? Integer.parseInt(args[0]) : 8080)\n",
+  "files_changed": [
+    "corpus/target/src/main/java/com/example/calc/CalcServer.java"
+  ],
+  "severity": "medium",
+  "component": "api",
+  "resolved_at": "2026-02-21T08:55:00+00:00"
+}

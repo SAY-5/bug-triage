@@ -1,0 +1,12 @@
+{
+  "id": "R023",
+  "bug_report": "Manifest in calc-server.jar is missing Main-Class, so 'java -jar calc-server-0.1.0.jar' fails with 'no main manifest attribute'.",
+  "root_cause": "maven-jar-plugin was not configured with a manifest mainClass entry.",
+  "fix_diff": "--- a/corpus/target/pom.xml\n+++ b/corpus/target/pom.xml\n@@ -1,2 +1,2 @@\n // context\n-<!-- no manifest -->\n+<archive><manifest><mainClass>com.example.calc.CalcServer</mainClass></manifest></archive>\n",
+  "files_changed": [
+    "corpus/target/pom.xml"
+  ],
+  "severity": "high",
+  "component": "build",
+  "resolved_at": "2026-02-27T16:35:00+00:00"
+}

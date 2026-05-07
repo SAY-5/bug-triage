@@ -1,0 +1,12 @@
+{
+  "id": "R008",
+  "bug_report": "ExpressionParser tokenizer rejects negative-number literals like '-3 + 4', failing with 'unexpected character'.",
+  "root_cause": "The tokenizer treated every '-' as an operator, so a leading minus could not start a number literal.",
+  "fix_diff": "--- a/corpus/target/src/main/java/com/example/calc/ExpressionParser.java\n+++ b/corpus/target/src/main/java/com/example/calc/ExpressionParser.java\n@@ -1,2 +1,2 @@\n // context\n-// always operator\n+if (c == '-' && num.isEmpty() && (out.isEmpty() || isOperator(out.get(out.size()-1)))) num.append(c);\n",
+  "files_changed": [
+    "corpus/target/src/main/java/com/example/calc/ExpressionParser.java"
+  ],
+  "severity": "medium",
+  "component": "core",
+  "resolved_at": "2026-01-26T10:50:00+00:00"
+}

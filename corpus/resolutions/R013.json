@@ -1,0 +1,12 @@
+{
+  "id": "R013",
+  "bug_report": "Validation.requireNonEmpty allows whitespace-only strings through to /eval, which then fails inside the parser with a confusing 'empty expression' message far from the origin.",
+  "root_cause": "requireNonEmpty only checked null but not isBlank.",
+  "fix_diff": "--- a/corpus/target/src/main/java/com/example/calc/Validation.java\n+++ b/corpus/target/src/main/java/com/example/calc/Validation.java\n@@ -1,2 +1,2 @@\n // context\n-if (raw == null) throw ...\n+if (raw == null || raw.isBlank()) throw new IllegalArgumentException(\"missing field: \" + name);\n",
+  "files_changed": [
+    "corpus/target/src/main/java/com/example/calc/Validation.java"
+  ],
+  "severity": "medium",
+  "component": "util",
+  "resolved_at": "2026-02-07T09:25:00+00:00"
+}

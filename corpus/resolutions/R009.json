@@ -1,0 +1,12 @@
+{
+  "id": "R009",
+  "bug_report": "ExpressionParser stack underflows on malformed input like '+ 1 2', returning a confusing NoSuchElementException.",
+  "root_cause": "evalRpn popped the operand stack without checking it had two values, propagating an unrelated exception type.",
+  "fix_diff": "--- a/corpus/target/src/main/java/com/example/calc/ExpressionParser.java\n+++ b/corpus/target/src/main/java/com/example/calc/ExpressionParser.java\n@@ -1,2 +1,2 @@\n // context\n-// no size check\n+if (stack.size() < 2) throw new IllegalArgumentException(\"malformed expression\");\n",
+  "files_changed": [
+    "corpus/target/src/main/java/com/example/calc/ExpressionParser.java"
+  ],
+  "severity": "medium",
+  "component": "core",
+  "resolved_at": "2026-01-28T12:35:00+00:00"
+}

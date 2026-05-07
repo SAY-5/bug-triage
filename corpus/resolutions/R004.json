@@ -1,0 +1,12 @@
+{
+  "id": "R004",
+  "bug_report": "Calculator.sub overflows silently when subtracting Long.MIN_VALUE from a positive operand at /sub.",
+  "root_cause": "Subtraction used `-` instead of Math.subtractExact, so overflow wrapped silently.",
+  "fix_diff": "--- a/corpus/target/src/main/java/com/example/calc/Calculator.java\n+++ b/corpus/target/src/main/java/com/example/calc/Calculator.java\n@@ -1,2 +1,2 @@\n // context\n-return a - b;\n+return Math.subtractExact(a, b);\n",
+  "files_changed": [
+    "corpus/target/src/main/java/com/example/calc/Calculator.java"
+  ],
+  "severity": "high",
+  "component": "core",
+  "resolved_at": "2026-01-15T11:30:00+00:00"
+}

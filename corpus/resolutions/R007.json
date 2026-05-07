@@ -1,0 +1,12 @@
+{
+  "id": "R007",
+  "bug_report": "ExpressionParser silently accepts unbalanced parentheses like '2 * (3 + 4' and evaluates to a wrong number instead of erroring.",
+  "root_cause": "RPN conversion did not check for a trailing '(' on the operator stack at the end of input.",
+  "fix_diff": "--- a/corpus/target/src/main/java/com/example/calc/ExpressionParser.java\n+++ b/corpus/target/src/main/java/com/example/calc/ExpressionParser.java\n@@ -1,2 +1,2 @@\n // context\n-// no balance check\n+if (\"(\".equals(top)) throw new IllegalArgumentException(\"unbalanced parentheses\");\n",
+  "files_changed": [
+    "corpus/target/src/main/java/com/example/calc/ExpressionParser.java"
+  ],
+  "severity": "high",
+  "component": "core",
+  "resolved_at": "2026-01-22T16:25:00+00:00"
+}

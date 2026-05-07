@@ -1,0 +1,12 @@
+{
+  "id": "R001",
+  "bug_report": "Calculator.div returns Infinity when b is zero instead of throwing ArithmeticException; clients see a malformed numeric response from the /div endpoint.",
+  "root_cause": "Division-by-zero guard was missing in Calculator.div; the method delegated straight to Java's IEEE-754 division which produces Infinity rather than raising.",
+  "fix_diff": "--- a/corpus/target/src/main/java/com/example/calc/Calculator.java\n+++ b/corpus/target/src/main/java/com/example/calc/Calculator.java\n@@ -1,2 +1,2 @@\n // context\n-// no zero check\n+if (b == 0L) throw new ArithmeticException(\"division by zero\");\n",
+  "files_changed": [
+    "corpus/target/src/main/java/com/example/calc/Calculator.java"
+  ],
+  "severity": "high",
+  "component": "core",
+  "resolved_at": "2026-01-04T10:15:00+00:00"
+}
