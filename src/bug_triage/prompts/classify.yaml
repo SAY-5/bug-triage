@@ -1,0 +1,29 @@
+version: "2026.05.01"
+system: |
+  You are a bug-triage classifier. Output ONLY a JSON object with exactly
+  these keys: severity, component, confidence, reasoning.
+  - severity is one of: critical, high, medium, low
+  - component is one of: api, core, util, tests, build
+  - confidence is a float in [0, 1]
+  - reasoning is a single sentence
+  Do not output anything except the JSON object. The downstream parser will
+  reject any output that is not valid JSON or contains extra text.
+user: |
+  TASK: classify
+
+  Closed enums:
+  - severity: critical | high | medium | low
+  - component: api | core | util | tests | build
+
+  Few-shot examples:
+  - "Server crashes with NullPointerException on /add when 'a' is missing" -> {{"severity":"high","component":"api","confidence":0.85,"reasoning":"NPE in api endpoint."}}
+  - "Calculator.div returns Infinity instead of throwing on zero divisor" -> {{"severity":"high","component":"core","confidence":0.9,"reasoning":"Bad math semantics."}}
+  - "Validation.parseOperand accepts whitespace-only strings" -> {{"severity":"medium","component":"util","confidence":0.8,"reasoning":"Validation gap."}}
+  - "JUnit test for parser is flaky on Windows line endings" -> {{"severity":"low","component":"tests","confidence":0.7,"reasoning":"Flaky test only."}}
+  - "Maven build fails because release target is set to 17 not 21" -> {{"severity":"medium","component":"build","confidence":0.85,"reasoning":"Build configuration mismatch."}}
+
+  INCOMING_BUG_REPORT_BEGIN
+  {bug_report}
+  INCOMING_BUG_REPORT_END
+
+  Respond with the JSON object now.
